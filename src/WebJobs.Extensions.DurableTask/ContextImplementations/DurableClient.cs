@@ -381,16 +381,16 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
         }
 
         /// <inheritdoc />
-        async Task IDurableOrchestrationClient.TerminateAsync(string instanceId, string reason)
+        async Task IDurableOrchestrationClient.TerminateAsync(string instanceId, string reason, bool terminateDescendants = false)
         {
             OrchestrationState state = await this.GetOrchestrationInstanceStateAsync(instanceId);
-            if (IsOrchestrationRunning(state))
+            if (IsOrchestrationAvailable(state))
             {
                 // Terminate events are not supposed to target any particular execution ID.
                 // We need to clear it to avoid sending messages to an expired ContinueAsNew instance.
                 state.OrchestrationInstance.ExecutionId = null;
 
-                await this.client.TerminateInstanceAsync(state.OrchestrationInstance, reason);
+                await this.client.TerminateInstanceAsync(state.OrchestrationInstance, reason, terminateDescendants);
 
                 this.traceHelper.FunctionTerminated(this.TaskHubName, state.Name, instanceId, reason);
             }
@@ -405,7 +405,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
             }
         }
 
-        async Task IDurableOrchestrationClient.SuspendAsync(string instanceId, string reason)
+        async Task IDurableOrchestrationClient.SuspendAsync(string instanceId, string reason, bool suspendDescendants = false)
         {
             OrchestrationState state = await this.GetOrchestrationInstanceStateAsync(instanceId);
             if (IsOrchestrationSuspendable(state))
@@ -426,7 +426,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
             }
         }
 
-        async Task IDurableOrchestrationClient.ResumeAsync(string instanceId, string reason)
+        async Task IDurableOrchestrationClient.ResumeAsync(string instanceId, string reason, bool resumeDescendants = false)
         {
             OrchestrationState state = await this.GetOrchestrationInstanceStateAsync(instanceId);
             if (IsOrchestrationSuspended(state))

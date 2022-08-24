@@ -223,8 +223,9 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
         /// <exception cref="InvalidOperationException">The orchestration instance with the provided instance id is not running.</exception>
         /// <param name="instanceId">The ID of the orchestration instance to terminate.</param>
         /// <param name="reason">The reason for terminating the orchestration instance.</param>
+        /// <param name="terminateDescendants">Indicates whether </param>
         /// <returns>A task that completes when the terminate message is enqueued if necessary.</returns>
-        Task TerminateAsync(string instanceId, string reason);
+        Task TerminateAsync(string instanceId, string reason, bool terminateDescendants = false);
 
         /// <summary>
         /// Suspends a running orchestration instance.
@@ -232,7 +233,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
         /// <param name="instanceId">The ID of the orchestration instance to suspend.</param>
         /// <param name="reason">The reason for suspending the orchestration instance.</param>
         /// <returns>A task that completes when the suspend message is enqueued if necessary.</returns>
-        Task SuspendAsync(string instanceId, string reason);
+        Task SuspendAsync(string instanceId, string reason, bool suspendDescendants = false);
 
         /// <summary>
         /// Resumes a suspended orchestration instance.
@@ -240,7 +241,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
         /// <param name="instanceId">The ID of the orchestration instance to resume.</param>
         /// <param name="reason">The reason for resuming the orchestration instance.</param>
         /// <returns>A task that completes when the resume message is enqueued if necessary.</returns>
-        Task ResumeAsync(string instanceId, string reason);
+        Task ResumeAsync(string instanceId, string reason, bool resumeDescendants = false);
 
         /// <summary>
         /// Rewinds the specified failed orchestration instance with a reason.
